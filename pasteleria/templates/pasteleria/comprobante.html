@@ -1,0 +1,33 @@
+{% extends 'pasteleria/base.html' %}
+
+{% block content %}
+
+<h1>¡Encargo realizado con éxito!</h1>
+
+<p>Gracias por comprar en Dulce Encanto.</p>
+
+<hr>
+
+<h2>Comprobante de compra</h2>
+
+<p><strong>Código:</strong> {{ encargo.codigo }}</p>
+
+<p><strong>Producto:</strong> {{ encargo.producto.nombre }}</p>
+
+<p><strong>Cliente:</strong> {{ encargo.nombre_cliente }}</p>
+
+<p><strong>Correo:</strong> {{ encargo.correo }}</p>
+
+<p><strong>Cantidad:</strong> {{ encargo.cantidad }}</p>
+
+<p><strong>Fecha de retiro:</strong> {{ encargo.fecha_retiro }}</p>
+
+<p><strong>Fecha del encargo:</strong> {{ encargo.fecha_encargo }}</p>
+
+<h2>Total: ${{ total|floatformat:0 }}</h2>
+
+<hr>
+
+<a href="{% url 'catalogo' %}">Volver al catálogo</a>
+
+{% endblock %}

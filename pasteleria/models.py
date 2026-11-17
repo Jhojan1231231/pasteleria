@@ -2,16 +2,16 @@ from django.db import models
 import uuid
 
 
-class linea(models.Model):
+class Linea(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     
     def __str__(self):
         return self.nombre
     
 
-class producto(models.Model):
+class Producto(models.Model):
     
-    linea = models.ForeignKey(linea, on_delete=models.CASCADE, related_name='productos')
+    linea = models.ForeignKey(Linea, on_delete=models.CASCADE, related_name='productos')
     nombre = models.CharField(max_length=150)
     descripcion = models.TextField()
     imagen = models.ImageField(upload_to='productos/')
@@ -30,9 +30,9 @@ class producto(models.Model):
         return self.nombre
     
 
-class encargo(models.Model):
+class Encargo(models.Model):
     
-    producto = models.ForeignKey(producto, on_delete=models.CASCADE, related_name='encargos')
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='encargos')
     nombre_cliente = models.CharField(max_length=100)
     
     correo = models.EmailField()

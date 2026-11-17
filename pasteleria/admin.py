@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import linea, producto, encargo
+from .models import Linea, Producto, Encargo
 
 # Administracion en linea
 
-@admin.register(linea)
+@admin.register(Linea)
 class LineaAdmin(admin.ModelAdmin):
     list_display = ('id', 'nombre',)
     search_fields = ('nombre',)
@@ -11,7 +11,7 @@ class LineaAdmin(admin.ModelAdmin):
 
 # Administracion de productos
 
-@admin.register(producto)
+@admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
     
     list_display = ('nombre', 'linea', 'mostrar_precio', 'porciones', 'apto_celiacos', 'stock', 'disponible')
@@ -27,7 +27,7 @@ class ProductoAdmin(admin.ModelAdmin):
     
 # Administracion de encargos
 
-@admin.register(encargo)
+@admin.register(Encargo)
 class EncargoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'nombre_cliente', 'producto', 'fecha_retiro',)
     

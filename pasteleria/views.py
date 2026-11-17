@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from .models import producto, linea
-
+from .models import Encargo, Producto, Linea
+from .forms import EncargoForm
+from django.db import transaction
+from django.shortcuts import redirect
 
 def catalogo(request):
 
-    productos = producto.objects.filter(
+    productos = Producto.objects.filter(
         disponible=True
     ).select_related('linea')
 
@@ -23,7 +25,7 @@ def catalogo(request):
             linea_id=linea_id
         )
 
-    lineas = linea.objects.all().order_by('nombre')
+    lineas = Linea.objects.all().order_by('nombre')
 
     contexto = {
         'productos': productos,
@@ -40,15 +42,71 @@ def catalogo(request):
 
 
 def detalle_producto(request, producto_id):
-
     producto = get_object_or_404(
-        producto,
+        Producto,
         id=producto_id,
         disponible=True
     )
 
+    if request.method == 'POST':
+        formulario = EncargoForm(request.POST, producto=producto)
+
+        if formulario.is_valid():
+            with transaction.atomic():
+                producto.refresh_from_db()
+
+                cantidad = formulario.cleaned_data['cantidad']
+
+                if cantidad > producto.stock:
+                    formulario.add_error(
+                        'cantidad',
+                        f'Solo quedan {producto.stock} unidades disponibles.'
+                    )
+                else:
+                    encargo = formulario.save(commit=False)
+                    encargo.producto = producto
+                    encargo.save()
+
+                    producto.stock -= cantidad
+                    producto.save(update_fields=['stock'])
+
+                    return redirect(
+                        'comprobante',
+                        codigo=encargo.codigo
+                    )
+    else:
+        formulario = EncargoForm(producto=producto)
+
+    contexto = {
+        'producto': producto,
+        'formulario': formulario
+    }
+
     return render(
         request,
         'pasteleria/detalle.html',
-        {'producto': producto}
+        contexto
     )
+    
+    
+
+def comprobante(request, codigo):
+    encargo = get_object_or_404(
+        Encargo.objects.select_related('producto'),
+        codigo=codigo
+    )
+
+    total = encargo.producto.precio * encargo.cantidad
+
+    contexto = {
+        'encargo': encargo,
+        'total': total
+    }
+
+    return render(
+        request,
+        'pasteleria/comprobante.html',
+        contexto
+    )
+    
+    

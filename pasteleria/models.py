@@ -20,7 +20,7 @@ class producto(models.Model):
     
     porciones = models.PositiveIntegerField()
     
-    apto_celiaco = models.BooleanField(default=False)
+    apto_celiacos = models.BooleanField(default=False)
     
     stock = models.PositiveIntegerField(default=0)
     

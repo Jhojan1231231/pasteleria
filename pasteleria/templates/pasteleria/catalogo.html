@@ -1,0 +1,104 @@
+{% extends 'pasteleria/base.html' %}
+
+{% block titulo %}Catálogo - Dulce Encanto{% endblock %}
+
+{% block contenido %}
+
+<h2>Nuestros productos</h2>
+
+<p>Descubre nuestras preparaciones artesanales.</p>
+
+<form method="GET">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Buscar producto..."
+        value="{{ busqueda }}"
+    >
+
+    <select name="linea">
+
+        <option value="">Todas las líneas</option>
+
+        {% for linea in lineas %}
+
+            <option
+                value="{{ linea.id }}"
+                {% if linea_seleccionada == linea.id|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+                {{ linea.nombre }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+    <button type="submit">Buscar</button>
+
+    <a href="{% url 'catalogo' %}">Limpiar</a>
+
+</form>
+
+<br>
+
+<div class="productos">
+
+    {% for producto in productos %}
+
+        <div class="tarjeta">
+
+            <img
+                src="{{ producto.imagen.url }}"
+                alt="{{ producto.nombre }}"
+            >
+
+            <div class="contenido">
+
+                <h3>{{ producto.nombre }}</h3>
+
+                <p>Línea: {{ producto.linea.nombre }}</p>
+
+                <p class="precio">
+                    ${{ producto.precio }}
+                </p>
+
+                {% if producto.stock > 0 %}
+
+                    <p>Disponible: {{ producto.stock }} unidades</p>
+
+                    <a
+                        class="boton"
+                        href="{% url 'detalle_producto' producto.id %}"
+                    >
+                        Ver producto
+                    </a>
+
+                {% else %}
+
+                    <p><strong>Agotado por hoy</strong></p>
+
+                    <a
+                        class="boton"
+                        href="{% url 'detalle_producto' producto.id %}"
+                    >
+                        Ver producto
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <p>No se encontraron productos.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

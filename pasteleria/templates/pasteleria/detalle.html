@@ -1,0 +1,49 @@
+{% extends 'pasteleria/base.html' %}
+
+{% block titulo %}{{ producto.nombre }} - Dulce Encanto{% endblock %}
+
+{% block contenido %}
+
+<h2>{{ producto.nombre }}</h2>
+
+<img
+    src="{{ producto.imagen.url }}"
+    alt="{{ producto.nombre }}"
+    style="width: 350px; max-width: 100%; border-radius: 10px;"
+>
+
+<p><strong>Línea:</strong> {{ producto.linea.nombre }}</p>
+
+<p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+
+<p><strong>Precio:</strong> ${{ producto.precio }}</p>
+
+<p><strong>Porciones:</strong> {{ producto.porciones }}</p>
+
+<p>
+    <strong>Apto para celíacos:</strong>
+
+    {% if producto.apto_celiacos %}
+        Sí
+    {% else %}
+        No
+    {% endif %}
+</p>
+
+{% if producto.stock > 0 %}
+
+    <p><strong>Stock disponible:</strong> {{ producto.stock }}</p>
+
+{% else %}
+
+    <p><strong>Agotado por hoy</strong></p>
+
+{% endif %}
+
+<br>
+
+<a class="boton" href="{% url 'catalogo' %}">
+    Volver al catálogo
+</a>
+
+{% endblock %}
